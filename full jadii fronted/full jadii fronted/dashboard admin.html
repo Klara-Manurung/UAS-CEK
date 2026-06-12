@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard Admin - Donasi Masjid ID</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',sans-serif; background:#f8f9fe; display:flex; min-height:100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar { width:240px; background:#1a1f4b; min-height:100vh; display:flex; flex-direction:column; flex-shrink:0; position:fixed; top:0; left:0; z-index:200; }
+.sidebar-logo { padding:1.4rem 1.5rem; display:flex; align-items:center; gap:10px; color:white; font-size:14px; font-weight:700; border-bottom:1px solid rgba(255,255,255,0.08); }
+.sidebar-logo i { font-size:22px; color:#818cf8; }
+.sidebar-nav { padding:0.75rem 0; flex:1; }
+.nav-label { font-size:10px; color:rgba(255,255,255,0.3); font-weight:700; letter-spacing:1px; padding:0.75rem 1.4rem 0.25rem; text-transform:uppercase; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:0.65rem 1.4rem; color:rgba(255,255,255,0.55); font-size:13px; cursor:pointer; transition:all 0.2s; border-left:3px solid transparent; text-decoration:none; }
+.nav-item i { font-size:18px; width:20px; flex-shrink:0; }
+.nav-item:hover { color:rgba(255,255,255,0.9); background:rgba(255,255,255,0.05); }
+.nav-item.active { color:white; background:rgba(129,140,248,0.18); border-left-color:#818cf8; }
+.sidebar-footer { padding:1rem 1.5rem; border-top:1px solid rgba(255,255,255,0.08); }
+.sidebar-footer a { font-size:12px; color:rgba(255,255,255,0.4); text-decoration:none; display:flex; align-items:center; gap:6px; }
+.sidebar-footer a:hover { color:rgba(255,255,255,0.7); }
+
+/* ── MAIN ── */
+.main { margin-left:240px; flex:1; display:flex; flex-direction:column; min-height:100vh; }
+.topbar { background:white; padding:0 2rem; height:60px; display:flex; align-items:center; justify-content:space-between; border-bottom:0.5px solid #e0e4ef; position:sticky; top:0; z-index:100; }
+.topbar-left h1 { font-size:1.2rem; font-weight:700; color:#1a1f4b; }
+.topbar-left p  { font-size:11px; color:#aaa; }
+.topbar-right   { display:flex; align-items:center; gap:0.75rem; }
+.notif-btn { width:36px; height:36px; border-radius:10px; background:#f9faff; border:0.5px solid #e0e4ef; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+.notif-dot { position:absolute; top:7px; right:7px; width:7px; height:7px; background:#ef4444; border-radius:50%; display:none; }
+.user-chip { display:flex; align-items:center; gap:8px; background:#f9faff; border:0.5px solid #e0e4ef; border-radius:999px; padding:4px 14px 4px 4px; }
+.user-chip .av { width:28px; height:28px; border-radius:50%; background:#4f65f0; color:white; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
+.user-chip span { font-size:12px; font-weight:600; color:#333; }
+.btn-logout-sm { font-size:12px; color:#e55; padding:0.3rem 0.75rem; border:1px solid #fca5a5; border-radius:7px; text-decoration:none; cursor:pointer; }
+.content { padding:1.5rem 2rem; flex:1; }
+
+/* ── TABS ── */
+.tab-nav { display:flex; border-bottom:2px solid #e0e4ef; margin-bottom:1.5rem; }
+.tab-btn { padding:0.6rem 1.2rem; font-size:13px; font-weight:600; color:#888; cursor:pointer; border:none; background:none; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
+.tab-btn.active { color:#4f65f0; border-bottom-color:#4f65f0; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* ── STAT CARDS ── */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+.stat-card { background:white; border-radius:14px; padding:1.2rem; border:0.5px solid #e0e4ef; }
+.stat-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:0.75rem; }
+.ic-blue   { background:#eef0ff; color:#4f65f0; }
+.ic-green  { background:#e6faf0; color:#059669; }
+.ic-amber  { background:#fff7e0; color:#d97706; }
+.ic-purple { background:#f3e8ff; color:#7c3aed; }
+.stat-val  { font-size:1.7rem; font-weight:800; color:#1a1f4b; line-height:1; }
+.stat-lbl  { font-size:12px; color:#888; margin-top:4px; }
+.stat-trend      { font-size:11px; margin-top:6px; display:flex; align-items:center; gap:3px; color:#059669; }
+.stat-trend.warn { color:#d97706; }
+
+/* ── CARDS & TABLE ── */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+.card { background:white; border-radius:14px; border:0.5px solid #e0e4ef; overflow:hidden; margin-bottom:1rem; }
+.card-header { padding:1rem 1.2rem; display:flex; justify-content:space-between; align-items:center; border-bottom:0.5px solid #f0f2ff; }
+.card-title  { font-size:14px; font-weight:700; color:#1a1f4b; }
+.card-body   { padding:0; }
+table { width:100%; border-collapse:collapse; font-size:12.5px; }
+th { text-align:left; color:#999; font-weight:600; padding:0.65rem 1rem; background:#fafbff; border-bottom:0.5px solid #eef0ff; font-size:11px; text-transform:uppercase; letter-spacing:0.3px; }
+td { padding:0.7rem 1rem; color:#333; border-bottom:0.5px solid #f4f5fc; vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#fafbff; }
+.empty-row td { text-align:center; color:#bbb; padding:2rem; }
+
+/* ── BADGES ── */
+.badge      { font-size:11px; padding:3px 10px; border-radius:999px; font-weight:600; }
+.b-aktif    { background:#e6faf0; color:#065f46; }
+.b-pending  { background:#fff7e0; color:#b45309; }
+.b-rejected { background:#fee2e2; color:#991b1b; }
+.b-verified { background:#e6faf0; color:#065f46; }
+
+/* ── ACTION BUTTONS ── */
+.btn-approve { font-size:11px; padding:4px 10px; background:#e6faf0; color:#065f46; border:1px solid #6ee7b7; border-radius:6px; cursor:pointer; font-weight:600; text-decoration:none; margin-right:4px; }
+.btn-reject  { font-size:11px; padding:4px 10px; background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; border-radius:6px; cursor:pointer; font-weight:600; text-decoration:none; }
+.btn-approve:hover { background:#d1fae5; }
+.btn-reject:hover  { background:#fecaca; }
+
+/* ── LAPORAN ── */
+.summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.75rem; margin-bottom:1.2rem; }
+.summary-card      { background:white; border-radius:12px; border:0.5px solid #e0e4ef; padding:1rem; }
+.summary-card .lbl { font-size:11px; color:#888; font-weight:600; margin-bottom:4px; text-transform:uppercase; }
+.summary-card .val { font-size:1.3rem; font-weight:800; color:#1a1f4b; }
+
+/* ── TOAST ── */
+#toast { position:fixed; bottom:24px; right:24px; background:#1a1f4b; color:white; padding:12px 20px; border-radius:12px; font-size:13px; display:flex; align-items:center; gap:8px; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:9999; }
+#toast.show { opacity:1; }
+
+@media(max-width:900px){
+    .stats-grid   { grid-template-columns:repeat(2,1fr); }
+    .grid-2       { grid-template-columns:1fr; }
+    .summary-grid { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<div id="toast"><i class="ti ti-check" style="font-size:16px"></i> <span id="toast-msg"></span></div>
+
+<!-- ════════════════════════════════════════
+     SIDEBAR
+     ════════════════════════════════════════ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <i class="ti ti-building-mosque"></i> Donasi Masjid ID
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-label">Menu</div>
+        <a class="nav-item active" onclick="showTab('dashboard',this)">
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+        </a>
+        <a class="nav-item" onclick="showTab('masjid',this)">
+            <i class="ti ti-building-mosque"></i> Kelola Masjid
+        </a>
+        <a class="nav-item" onclick="showTab('donasi',this)">
+            <i class="ti ti-shield-check"></i> Verifikasi Donasi
+        </a>
+        <div class="nav-label" style="margin-top:0.5rem">Laporan</div>
+        <a class="nav-item" onclick="showTab('laporan',this)">
+            <i class="ti ti-chart-bar"></i> Laporan
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="/logout"><i class="ti ti-arrow-left"></i> Keluar</a>
+    </div>
+</aside>
+
+<!-- ════════════════════════════════════════
+     MAIN
+     ════════════════════════════════════════ -->
+<main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1 id="page-title">Dashboard Admin</h1>
+            <p>
+                Selamat datang,
+                <strong id="admin-nama"><!-- nama_admin --></strong>
+                &middot;
+                <span id="hari-ini"><!-- tanggal --></span>
+            </p>
+        </div>
+        <div class="topbar-right">
+            <div class="notif-btn">
+                <i class="ti ti-bell" style="font-size:18px;color:#555"></i>
+                <div class="notif-dot" id="notif-dot"></div>
+            </div>
+            <div class="user-chip">
+                <div class="av" id="admin-inisial"><!-- inisial --></div>
+                <span id="admin-nama-chip"><!-- nama_admin --></span>
+            </div>
+            <a href="/logout" class="btn-logout-sm">
+                <i class="ti ti-logout" style="font-size:13px;vertical-align:-2px"></i> Keluar
+            </a>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- TAB NAV -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="showTab('dashboard',this)">
+                <i class="ti ti-layout-dashboard" style="font-size:14px"></i> Dashboard
+            </button>
+            <button class="tab-btn" onclick="showTab('masjid',this)">
+                <i class="ti ti-building-mosque" style="font-size:14px"></i> Kelola Masjid
+            </button>
+            <button class="tab-btn" onclick="showTab('donasi',this)">
+                <i class="ti ti-shield-check" style="font-size:14px"></i> Verifikasi Donasi
+            </button>
+            <button class="tab-btn" onclick="showTab('laporan',this)">
+                <i class="ti ti-chart-bar" style="font-size:14px"></i> Laporan
+            </button>
+        </div>
+
+        <!-- ══════════════════════════════════
+             TAB: DASHBOARD
+             ══════════════════════════════════ -->
+        <div id="tab-dashboard" class="tab-content active">
+
+            <!-- STAT CARDS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon ic-blue"><i class="ti ti-building-mosque"></i></div>
+                    
+                    <div class="stat-val" id="stat-total-masjid">0</div>
+                    <div class="stat-lbl">Masjid Terverifikasi</div>
+                    <div class="stat-trend"><i class="ti ti-trending-up" style="font-size:12px"></i> Aktif</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon ic-amber"><i class="ti ti-clock"></i></div>
+                    <div class="stat-val" id="stat-pending-masjid">0</div>
+                    <div class="stat-lbl">Masjid Menunggu</div>
+                    <div class="stat-trend warn"><i class="ti ti-alert-circle" style="font-size:12px"></i> Perlu ditinjau</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon ic-green"><i class="ti ti-users"></i></div>
+                    <div class="stat-val" id="stat-total-donatur">0</div>
+                    <div class="stat-lbl">Total Donatur</div>
+                    <div class="stat-trend"><i class="ti ti-trending-up" style="font-size:12px"></i> Terdaftar</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon ic-purple"><i class="ti ti-cash"></i></div>
+                    <div class="stat-val" id="stat-total-donasi">Rp 0</div>
+                    <div class="stat-lbl">Total Donasi</div>
+                    <div class="stat-trend"><i class="ti ti-trending-up" style="font-size:12px"></i> Terverifikasi</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+
+                <!-- DONASI TERBARU -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Donasi Terbaru</span>
+                        <!-- BACKEND: isi angka dengan $pending_donasi -->
+                        <span class="badge b-pending" id="badge-pending-donasi">0 Pending</span>
+                    </div>
+                    <div class="card-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Donatur</th>
+                                    <th>Masjid</th>
+                                    <th>Jumlah</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-donasi-terbaru">
+                                <tr class="empty-row"><td colspan="4">Belum ada donasi</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- MASJID MENUNGGU PERSETUJUAN -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Masjid Menunggu Persetujuan</span>
+                        <!-- BACKEND: isi angka dengan $pending_masjid -->
+                        <span class="badge b-pending" id="badge-pending-masjid">0 Pending</span>
+                    </div>
+                    <div class="card-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nama Masjid</th>
+                                    <th>Kota</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-masjid-pending">
+                                <tr class="empty-row"><td colspan="3">Tidak ada yang menunggu</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+       <!-- ══════════════════════════════════
+             TAB: KELOLA MASJID 
+             ══════════════════════════════════ -->
+        <div id="tab-masjid" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Semua Masjid</span>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nama Masjid</th>
+                                <th>Kota</th>
+                                <th>Target</th>
+                                <th>Terkumpul</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-all-masjid">
+                            <tr class="empty-row"><td colspan="8">Belum ada data masjid</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             TAB: VERIFIKASI DONASI
+             ══════════════════════════════════ -->
+        <div id="tab-donasi" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Verifikasi Donasi</span>
+                    <!-- BACKEND: isi angka dengan $pending_donasi -->
+                    <span class="badge b-pending" id="badge-pending-donasi-2">0 Menunggu</span>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tanggal</th>
+                                <th>Donatur</th>
+                                <th>Masjid</th>
+                                <th>Jumlah</th>
+                                <th>Metode</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-all-donasi">
+                            <tr class="empty-row"><td colspan="8">Belum ada data donasi</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             TAB: LAPORAN
+             ══════════════════════════════════ -->
+        <div id="tab-laporan" class="tab-content">
+
+            <!-- SUMMARY CARDS -->
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="lbl">Total Transaksi</div>
+                    <!-- BACKEND: isi dengan $ls['total'] -->
+                    <div class="val" id="lap-total">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="lbl">Total Terkumpul</div>
+                    <!-- BACKEND: isi dengan rupiah($ls['sum']) -->
+                    <div class="val" id="lap-sum">Rp 0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="lbl">Terverifikasi</div>
+                    <!-- BACKEND: isi dengan $ls['ver'] -->
+                    <div class="val" id="lap-ver">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="lbl">Menunggu</div>
+                    <!-- BACKEND: isi dengan $ls['pend'] -->
+                    <div class="val" id="lap-pend">0</div>
+                </div>
+            </div>
+
+            <!-- TABEL DETAIL -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Detail Transaksi Donasi</span>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tanggal</th>
+                                <th>Donatur</th>
+                                <th>Masjid</th>
+                                <th>Jumlah</th>
+                                <th>Metode</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-laporan">
+                            <tr class="empty-row"><td colspan="7">Belum ada data transaksi</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+<script>
+
+  // TAB NAVIGATION //
+   
+function showTab(t, el) {
+    document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+    document.querySelectorAll('.tab-btn, .nav-item').forEach(e => e.classList.remove('active'));
+    document.getElementById('tab-' + t).classList.add('active');
+    if (el) el.classList.add('active');
+    const titles = {
+        dashboard : 'Dashboard Admin',
+        masjid    : 'Kelola Masjid',
+        donasi    : 'Verifikasi Donasi',
+        laporan   : 'Laporan'
+    };
+    document.getElementById('page-title').textContent = titles[t] || 'Dashboard';
+}
+
+
+  // TOAST NOTIFICATION//
+   
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+</script>
+</body>
+</html>

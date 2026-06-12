@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Donasi Masjid Indonesia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        .avatar-circle {
+            width: 100px; height: 100px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; color: white; margin: 0 auto;
+        }
+        .badge-status-verified { background: #28a745; }
+        .badge-status-pending  { background: #ffc107; color: #000; }
+        .badge-status-cancelled{ background: #dc3545; }
+    </style>
+</head>
+<body class="bg-light">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top" style="background:#0f172a!important;">
+    <div class="container">
+        <a class="navbar-brand" href="index.php" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+            <div style="width:40px;height:40px;background:linear-gradient(135deg,#10b981,#f59e0b);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">
+                <i class="fas fa-mosque"></i>
+            </div>
+            <span style="font-family:'Amiri',serif;font-size:20px;color:white;">Donasi Masjid ID</span>
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="laporan.php">Laporan</a>
+            <a class="nav-link active fw-semibold" href="profile.php">
+                <i class="fas fa-user me-1"></i>
+            </a>
+            <a class="nav-link btn btn-outline-light ms-2" href="logout.php">Keluar</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+
+    <div class="row g-4">
+        <!-- Kartu Profil -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow text-center p-4">
+                <div class="avatar-circle mb-3">
+                    
+                </div>
+                <h5 class="fw-bold"></h5>
+                <p class="text-muted mb-1">@</p>
+                <p class="text-muted small"></p>
+                <span class="badge bg-primary"></span>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="fw-bold text-primary"></h4>
+                        <small class="text-muted">Total Donasi</small>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="fw-bold text-success">Rp </h6>
+                        <small class="text-muted">Terverifikasi</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form & Riwayat -->
+        <div class="col-lg-8">
+            <!-- Tab -->
+            <ul class="nav nav-tabs mb-4" id="profileTab">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#editProfil">Edit Profil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#gantiPassword">Ganti Password</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#riwayat">Riwayat Donasi</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Edit Profil -->
+                <div class="tab-pane fade show active" id="editProfil">
+                    <div class="card border-0 shadow">
+                        <div class="card-body p-4">
+                            <form method="POST">
+                                <input type="hidden" name="action" value="update_profil">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Nama Lengkap</label>
+                                    <input type="text" name="nama_lengkap" class="form-control" value="" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Email</label>
+                                    <input type="email" class="form-control" value="" disabled>
+                                    <div class="form-text">Email tidak dapat diubah</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Telepon</label>
+                                    <input type="text" name="telepon" class="form-control" value="">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Alamat</label>
+                                    <textarea name="alamat" class="form-control" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Simpan Perubahan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ganti Password -->
+                <div class="tab-pane fade" id="gantiPassword">
+                    <div class="card border-0 shadow">
+                        <div class="card-body p-4">
+                            <form method="POST">
+                                <input type="hidden" name="action" value="ganti_password">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Password Lama</label>
+                                    <input type="password" name="password_lama" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Password Baru</label>
+                                    <input type="password" name="password_baru" class="form-control" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Ulangi Password Baru</label>
+                                    <input type="password" name="password_ulang" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-key me-2"></i>Ganti Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Riwayat Donasi -->
+                <div class="tab-pane fade" id="riwayat">
+                    <div class="card border-0 shadow">
+                        <div class="card-body p-4">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-hand-holding-heart fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Belum ada riwayat donasi</p>
+                                    <a href="index.php" class="btn btn-primary">Mulai Donasi</a>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

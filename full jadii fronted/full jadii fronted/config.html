@@ -1,0 +1,69 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'donasi_masjid');
+
+try {
+    $pdo = new PDO(
+        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+        DB_USER,
+        DB_PASS
+    );
+
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+    $conn = $pdo;
+
+} catch (PDOException $e) {
+    die("
+    <div style='font-family: Arial, sans-serif; color: red; padding: 20px;'>
+        <h3>Koneksi database gagal!</h3>
+        <p>" . $e->getMessage() . "</p>
+        <small>
+            Pastikan XAMPP (Apache & MySQL) sudah berjalan dan database
+            <strong>" . DB_NAME . "</strong> sudah dibuat.
+        </small>
+    </div>
+    ");
+}
+
+function rupiah($angka)
+{
+    return 'Rp ' . number_format($angka, 0, ',', '.');
+}
+
+function isLoggedIn()
+{
+    return isset($_SESSION['user_id']);
+}
+
+function getUserRole()
+{
+    return $_SESSION['role'] ?? null;
+}
+
+function redirect($url)
+{
+    header("Location: $url");
+    exit;
+}
+
+function cekLogin($role = null)
+{
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /donasi_masjid/login.php');
+        exit;
+    }
+
+    if ($role && ($_SESSION['role'] ?? null) !== $role) {
+        header('Location: /donasi_masjid/login.php?error=akses');
+        exit;
+    }
+}
+?>

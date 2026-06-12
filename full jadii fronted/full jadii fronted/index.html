@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donasi Masjid</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+body{font-family:Segoe UI,sans-serif;background:#f5f7ff;margin:0}
+.nav{background:#fff;padding:15px 30px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb}
+.logo{font-weight:700;color:#4f46e5;text-decoration:none;font-size:20px}
+.container{max-width:1100px;margin:30px auto;padding:0 20px}
+.hero{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:40px;border-radius:20px;text-align:center}
+.stats{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:25px}
+.stat{background:rgba(255,255,255,.15);padding:15px 25px;border-radius:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-top:30px}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card-top{height:120px;background:linear-gradient(135deg,#c7d2fe,#a5b4fc);display:flex;align-items:center;justify-content:center;font-size:50px}
+.card-body{padding:20px}
+.btn{display:inline-block;background:#4f46e5;color:#fff;text-decoration:none;padding:10px 16px;border-radius:10px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;margin-top:30px}
+th,td{padding:12px 15px;border-bottom:1px solid #f1f5f9;text-align:left}
+th{background:#f8fafc}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.pending{background:#fef3c7;color:#92400e}
+.verified{background:#dcfce7;color:#166534}
+.logout{color:#ef4444;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="nav">
+    <a href="index.php" class="logo">🕌 Donasi Masjid ID</a>
+    <div>
+        <span style="margin-right:15px;">Halo, <?= htmlspecialchars($nama) ?></span>
+        <a href="logout.php" class="logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="hero">
+        <h1>Bantu Pembangunan Masjid</h1>
+        <p>Salurkan donasi Anda untuk masjid di seluruh Indonesia</p>
+
+```
+    <div class="stats">
+        <div class="stat">
+            <strong><?= isset($total_provinsi) ? $total_provinsi : 0 ?></strong><br>Provinsi
+        </div>
+        <div class="stat">
+            <strong><?= isset($total_kota) ? $total_kota : 0 ?></strong><br>Kota/Kabupaten
+        </div>
+        <div class="stat">
+            <strong><?= rupiah(isset($total_donasi) ? $total_donasi : 0) ?></strong><br>Total Donasi
+        </div>
+    </div>
+</div>
+
+<h2 style="margin-top:35px;">Masjid yang Membutuhkan Donasi</h2>
+
+<div class="cards">
+    <?php if (!empty($masjid_list)): ?>
+        <?php foreach ($masjid_list as $m): ?>
+            <?php
+            $target = (float)$m['target_donasi'];
+            $terkumpul = (float)$m['total_donasi'];
+            $persen = $target > 0 ? min(100, round(($terkumpul / $target) * 100)) : 0;
+            ?>
+            <div class="card">
+                <div class="card-top">🕌</div>
+                <div class="card-body">
+                    <h3><?= htmlspecialchars($m['nama_masjid']) ?></h3>
+                    <p><?= htmlspecialchars($m['nama_kota']) ?>, <?= htmlspecialchars($m['nama_provinsi']) ?></p>
+                    <p><strong>Terkumpul:</strong> <?= rupiah($terkumpul) ?></p>
+                    <p><strong>Target:</strong> <?= rupiah($target) ?></p>
+                    <p><strong><?= $persen ?>%</strong> tercapai</p>
+                    <a href="donasi.php?masjid_id=<?= $m['id'] ?>" class="btn">Donasi Sekarang</a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Belum ada masjid yang tersedia.</p>
+    <?php endif; ?>
+</div>
+
+<h2 style="margin-top:40px;">Riwayat Donasi Saya</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tanggal</th>
+            <th>Masjid</th>
+            <th>Jumlah</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($donasi_result)): ?>
+            <?php foreach ($donasi_result as $d): ?>
+                <tr>
+                    <td><?= date('d M Y', strtotime($d['created_at'])) ?></td>
+                    <td><?= htmlspecialchars($d['nama_masjid']) ?></td>
+                    <td><?= rupiah($d['jumlah_donasi']) ?></td>
+                    <td>
+                        <span class="badge <?= $d['status'] === 'verified' ? 'verified' : 'pending' ?>">
+                            <?= ucfirst($d['status']) ?>
+                        </span>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="4" style="text-align:center;color:#94a3b8;">Belum ada riwayat donasi.</td>
+            </tr>
+        <?php endif; ?>
+    </tbody>
+</table>
+```
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftarkan Masjid - Donasi Masjid Indonesia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        .page-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white; padding: 48px 0 36px;
+        }
+        .form-card { border: none; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
+        .section-label {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.2px; color: #64748b;
+            border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 20px; margin-top: 8px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+        }
+        .btn-daftar {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none; font-weight: 700; padding: 12px 32px;
+            border-radius: 12px; font-size: 15px; color: white;
+            transition: all 0.2s; box-shadow: 0 6px 20px rgba(245,158,11,0.35);
+        }
+        .btn-daftar:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(245,158,11,0.45); color: white; }
+        .info-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 14px 18px; font-size: 13px; color: #92400e; }
+        .badge-pending  { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .badge-approved { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .badge-rejected { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        .masjid-row { border: none; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: all 0.2s; }
+        .masjid-row:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .progress { height: 8px; border-radius: 8px; }
+        .success-wrap { background: #f0fdf4; border: 1px solid #86efac; border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
+        .success-icon-sm { width: 44px; height: 44px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #16a34a; flex-shrink: 0; }
+        select:disabled { background-color: #f8fafc; }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="index.php">
+            <i class="fas fa-mosque text-primary me-2"></i>Donasi Masjid ID
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <div class="navbar-nav ms-auto align-items-lg-center gap-1">
+                <a class="nav-link" href="index.php"><i class="fas fa-home me-1"></i>Beranda</a>
+                <a class="nav-link" href="laporan.php"><i class="fas fa-chart-bar me-1"></i>Laporan</a>
+                <a class="nav-link active fw-semibold" href="daftar_masjid.php">
+                    <i class="fas fa-mosque me-1"></i>Masjid Saya
+                </a>
+                <a class="nav-link" href="profile.php">
+                    <i class="fas fa-user me-1"></i><?= htmlspecialchars($_SESSION['nama']) ?>
+                </a>
+                <a class="nav-link btn btn-outline-primary px-3 ms-1" href="logout.php">Keluar</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item">
+                    <a href="index.php" class="text-white-50 text-decoration-none">Beranda</a>
+                </li>
+                <li class="breadcrumb-item text-white active">Daftarkan Masjid</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-1"><i class="fas fa-mosque me-3"></i>Daftarkan Masjid</h1>
+        <p class="mb-0 opacity-75">Daftarkan masjid Anda untuk mulai menerima donasi dari seluruh Indonesia</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+
+        <!-- ══ KIRI: FORM ══ -->
+        <div class="col-lg-7">
+            <div class="success-wrap">
+                <div class="success-icon-sm"><i class="fas fa-check"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-1 text-success">Berhasil Didaftarkan!</h6>
+                    <p class="mb-0 small text-success">Masjid Anda sudah terkirim dan menunggu verifikasi admin (1–3 hari kerja).</p>
+                </div>
+            </div>
+            <div class="info-box mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Masjid yang didaftarkan akan berstatus <strong>Menunggu Verifikasi</strong> hingga
+                disetujui admin. Setelah aktif, halaman donasi masjid Anda bisa diakses publik.
+            </div>
+
+            <div class="card form-card">
+                <div class="card-body p-4">
+                    <form method="POST" id="formDaftar">
+
+                        <div class="section-label"><i class="fas fa-mosque me-2"></i>Informasi Masjid</div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nama Masjid <span class="text-danger">*</span></label>
+                            <input type="text" name="nama_masjid" class="form-control"
+                                   placeholder="Contoh: Masjid Al-Ikhlas" required
+                                   
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Alamat Lengkap</label>
+                            <input type="text" name="alamat" class="form-control"
+                                   placeholder="Jl. ... No. ... RT/RW ..."
+                                
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Provinsi <span class="text-danger">*</span></label>
+                                <select id="provinsiSel" class="form-select" onchange="loadKota(this.value)">
+                                    <option value="">-- Pilih Provinsi --</option>
+                                    <?php foreach($provinsi_list as $p): ?>
+                                    <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['nama_provinsi']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Kota/Kab <span class="text-danger">*</span></label>
+                                <select id="kotaSel" class="form-select" onchange="loadKecamatan(this.value)" disabled>
+                                    <option value="">-- Pilih Kota --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Kecamatan <span class="text-danger">*</span></label>
+                                <select name="kecamatan_id" id="kecamatanSel" class="form-select" disabled required>
+                                    <option value="">-- Pilih Kecamatan --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Target Donasi (Rp)</label>
+                            <div class="input-group">
+                                <span class="input-group-text fw-semibold">Rp</span>
+                                <input type="number" name="target_donasi" class="form-control"
+                                       placeholder="Contoh: 50000000" min="0"
+                                       value="<?= htmlspecialchars($_POST['target_donasi'] ?? '') ?>">
+                            </div>
+                            <div class="form-text">Kosongkan jika tidak ada target</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Deskripsi / Kebutuhan Masjid</label>
+                            <textarea name="deskripsi" class="form-control" rows="4"
+                                      placeholder="Ceritakan kondisi masjid dan rencana penggunaan donasi..."></textarea>
+                        </div>
+
+                        <div class="section-label"><i class="fas fa-user-tie me-2"></i>Penanggung Jawab (PIC)</div>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nama PIC <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" name="nama_pic" class="form-control"
+                                           placeholder="Nama pengurus / ketua" required
+                                           value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Telepon PIC <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input type="text" name="telepon_pic" class="form-control"
+                                           placeholder="08xxxxxxxxxx" required
+                                           value="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="index.php" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-arrow-left me-2"></i>Kembali
+                            </a>
+                            <button type="submit" class="btn btn-daftar px-4" id="btnSubmit">
+                                <i class="fas fa-paper-plane me-2"></i>Kirim Permohonan
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ //KANAN: MASJID SAYA//══ -->
+        <div class="col-lg-5">
+            <div class="card form-card">
+                <div class="card-header bg-white border-0 pt-4 pb-2 px-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-list-alt text-warning me-2"></i>Masjid Saya
+                    </h5>
+                    <p class="text-muted small mb-0">Daftar masjid yang sudah Anda daftarkan</p>
+                </div>
+                <div class="card-body px-4 pb-4">
+
+                    <?php if (empty($my_masjid)): ?>
+                    <div class="text-center py-4">
+                        <i class="fas fa-mosque fa-3x text-muted mb-3"></i>
+                        <p class="text-muted small">Belum ada masjid yang didaftarkan.<br>Isi form di sebelah kiri untuk mulai.</p>
+                    </div>
+
+                    <?php else: ?>
+                    <div class="d-flex flex-column gap-3 mt-2">
+                        <div class="card masjid-row">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-bold mb-0" style="font-size:14px">
+                                        <?= htmlspecialchars($m['nama_masjid']) ?>
+                                    </h6>
+                                    <span class="badge <?= $bc ?> ms-2"
+                                          style="font-size:11px;border-radius:20px;padding:4px 10px">
+                                        <i class="fas <?= $bi ?> me-1"></i><?= $bl ?>
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    <?= htmlspecialchars($m['nama_kecamatan']) ?>,
+                                    <?= htmlspecialchars($m['nama_kota']) ?>,
+                                    <?= htmlspecialchars($m['nama_provinsi']) ?>
+                                </p>
+                                <?php if ($m['target_donasi'] > 0): ?>
+                                <div class="mb-1">
+                                    <div class="d-flex justify-content-between small text-muted mb-1">
+                                        <span>Rp <?= number_format($m['total_donasi'],0,',','.') ?></span>
+                                        <span><?= $pct ?>%</span>
+                                    </div>
+                                   
+                                    <small class="text-muted">Target: Rp <?= number_format($m['target_donasi'],0,',','.') ?></small>
+                                </div>
+                                <?php else: ?>
+                                <small class="text-muted">
+                                    Terkumpul: <strong>Rp <?= number_format($m['total_donasi'],0,',','.') ?></strong>
+                                </small>
+                                <?php endif; ?>
+                                <div class="mt-2 small text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    <?= date('d M Y', strtotime($m['created_at'])) ?>
+                                </div>
+                                <?php if ($m['status'] === 'rejected'): ?>
+                                <div class="alert alert-danger py-2 px-3 mt-2 mb-0 small" style="border-radius:8px">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Permohonan ditolak. Silakan daftar ulang dengan data yang benar.
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+async function loadKota(provinsiId) {
+    const kotaSel = document.getElementById('kotaSel');
+    const kecSel  = document.getElementById('kecamatanSel');
+    kotaSel.innerHTML = '<option value="">Memuat...</option>';
+    kecSel.innerHTML  = '<option value="">-- Pilih Kecamatan --</option>';
+    kotaSel.disabled = true; kecSel.disabled = true;
+    if (!provinsiId) { kotaSel.innerHTML = '<option value="">-- Pilih Kota --</option>'; return; }
+    const data = await fetch('get_kota.php?provinsi_id=' + provinsiId).then(r => r.json());
+    kotaSel.innerHTML = '<option value="">-- Pilih Kota --</option>';
+    data.forEach(k => kotaSel.innerHTML += `<option value="${k.id}">${k.nama_kota}</option>`);
+    kotaSel.disabled = false;
+}
+
+async function loadKecamatan(kotaId) {
+    const kecSel = document.getElementById('kecamatanSel');
+    kecSel.innerHTML = '<option value="">Memuat...</option>';
+    kecSel.disabled  = true;
+    if (!kotaId) { kecSel.innerHTML = '<option value="">-- Pilih Kecamatan --</option>'; return; }
+    const data = await fetch('get_kecamatan.php?kota_id=' + kotaId).then(r => r.json());
+    kecSel.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+    data.forEach(k => kecSel.innerHTML += `<option value="${k.id}">${k.nama_kecamatan}</option>`);
+    kecSel.disabled = false;
+}
+
+document.getElementById('formDaftar').addEventListener('submit', function() {
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled  = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
+});
+</script>
+</body>
+</html>
